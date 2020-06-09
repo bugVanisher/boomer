@@ -149,8 +149,7 @@ func TestSpawnWorkersWithManyTasks(t *testing.T) {
 	const hatchRate float64 = 10
 	runner.hatchRate = hatchRate
 
-	go runner.spawnWorkers(numToSpawn, runner.stopChan, runner.hatchComplete)
-	time.Sleep(4 * time.Second)
+	runner.spawnWorkers(numToSpawn, runner.stopChan, runner.hatchComplete)
 
 	currentClients := atomic.LoadInt32(&runner.numClients)
 
@@ -225,8 +224,7 @@ func TestSpawnWorkersWithManyTasksInWeighingTaskSet(t *testing.T) {
 	const hatchRate float64 = 10
 	runner.hatchRate = hatchRate
 
-	go runner.spawnWorkers(numToSpawn, runner.stopChan, runner.hatchComplete)
-	time.Sleep(4 * time.Second)
+	runner.spawnWorkers(numToSpawn, runner.stopChan, runner.hatchComplete)
 
 	currentClients := atomic.LoadInt32(&runner.numClients)
 
@@ -376,8 +374,8 @@ func TestOnHatchMessage(t *testing.T) {
 	}()
 
 	runner.onHatchMessage(newMessage("hatch", map[string]interface{}{
-		"hatch_rate":  float64(20),
-		"num_clients": int64(20),
+		"hatch_rate": float64(20),
+		"num_users":  int64(20),
 	}, runner.nodeID))
 
 	if workers != 20 {
@@ -476,8 +474,8 @@ func TestOnMessage(t *testing.T) {
 
 	// start hatching
 	runner.onMessage(newMessage("hatch", map[string]interface{}{
-		"hatch_rate":  float64(10),
-		"num_clients": int64(10),
+		"hatch_rate": float64(10),
+		"num_users":  int64(10),
 	}, runner.nodeID))
 
 	msg := <-runner.client.sendChannel()
@@ -498,10 +496,10 @@ func TestOnMessage(t *testing.T) {
 		t.Error("Runner should send hatch_complete message when hatch completed, got", msg.Type)
 	}
 
-	// increase num_clients while running
+	// increase num_users while running
 	runner.onMessage(newMessage("hatch", map[string]interface{}{
-		"hatch_rate":  float64(20),
-		"num_clients": int64(20),
+		"hatch_rate": float64(20),
+		"num_users":  int64(20),
 	}, runner.nodeID))
 
 	msg = <-runner.client.sendChannel()
@@ -537,8 +535,8 @@ func TestOnMessage(t *testing.T) {
 
 	// hatch again
 	runner.onMessage(newMessage("hatch", map[string]interface{}{
-		"hatch_rate":  float64(10),
-		"num_clients": uint64(10),
+		"hatch_rate": float64(10),
+		"num_users":  uint64(10),
 	}, runner.nodeID))
 
 	msg = <-runner.client.sendChannel()
